@@ -5,8 +5,8 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
-static int borderpx = 2;
+static char *font = "SFMono:pixelsize=16:antialias=true:autohint=true";
+static int borderpx = 33;
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -66,6 +66,18 @@ static unsigned int blinktimeout = 800;
  * thickness of underline and bar cursors
  */
 static unsigned int cursorthickness = 2;
+
+/*
+ * 1: render most of the lines/blocks characters without using the font for
+ *    perfect alignment between cells (U2500 - U259F except dashes/diagonals).
+ *    Bold affects lines thickness if boxdraw_bold is not 0. Italic is ignored.
+ * 0: disable (render all U25XX glyphs normally from the font).
+ */
+const int boxdraw = 0;
+const int boxdraw_bold = 0;
+
+/* braille (U28XX):  1: render as adjacent "pixels",  0: use font */
+const int boxdraw_braille = 0;
 
 /*
  * bell volume. It must be a value between -100 and 100. Use 0 for disabling
@@ -144,11 +156,24 @@ static unsigned int defaultrcs = 257;
 static unsigned int cursorshape = 2;
 
 /*
+ * Whether to use pixel geometry or cell geometry
+ */
+
+static Geometry geometry = CellGeometry;
+
+/*
  * Default columns and rows numbers
  */
 
 static unsigned int cols = 80;
 static unsigned int rows = 24;
+
+/*
+ * Default width and height (including borders!)
+ */
+
+static unsigned int width = 564;
+static unsigned int height = 364;
 
 /*
  * Default colour and shape of the mouse cursor
@@ -176,7 +201,7 @@ static uint forcemousemod = ShiftMask;
  */
 static MouseShortcut mshortcuts[] = {
 	/* mask                 button   function        argument       release */
-	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
+	{ XK_ANY_MOD,           Button2, clippaste,       {.i = 0},      1 },
 	{ ShiftMask,            Button4, ttysend,        {.s = "\033[5;2~"} },
 	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
 	{ ShiftMask,            Button5, ttysend,        {.s = "\033[6;2~"} },
